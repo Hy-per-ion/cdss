@@ -421,6 +421,188 @@ STA 0f
 LDCH 53
 STCH 57
 END *
+==========================================================
+Program 8:-
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+void main()
+{
+FILE *fp;
+int i,addrl,l,j,staddrl;
+char name[10],line[50],namel[10],addr[10],rec[10],ch,staddr[10];
+printf("enter program name:");
+scanf("%s",name);
+fp=fopen("abssrc.txt","r");
+fscanf(fp,"%s",line);
+for(i=2,j=0;i<8,j<6;i++,j++)
+namel[j]=line[i];
+namel[i]='\0';
+printf("name from obj.%s\n",namel);
+if(strcmp(name,namel)==0)
+{
+do{
+fscanf(fp,"%s",line);
+if(line[0]=='T'){
+for(i=2,j=0;i<8,j<6;i++,j++)
+staddr[j]=line[i];
+staddr[j]='\0';
+staddrl=atoi(staddr);
+i=12;
+while(line[i]!='$')
+{
+if(line[i]!='^')
+{
+printf("00%d\t%c%c\n",staddrl,line[i],line[i+1]);
+staddrl++;
+i=i+2;
+}
+else
+i++;
+}}
+else if(line[0]='E')
+fclose(fp);
+}
+while(!feof(fp));
+}
+}
+O/p:-
+Program name - SAMPLE
+===========================================================================
+Program 9:-
+#include<stdio.h>
+#include<ctype.h>
+#include<stdlib.h>
+void FIRST(char);
+int count,n=0;
+char prodn[10][10],first[10];
+void main()
+{
+int i,choice;
+char c,ch;
+printf("Enter the number of productions: ");
+scanf("%d",&count);
+printf("Enter %d productions:\nEpsilon=$\n",count);
+for(i=0;i<count;i++)
+scanf("%s%c",prodn[i],&ch);
+do{
+n=0;
+printf("Element :");
+scanf("%c",&c);
+FIRST(c);
+printf("\nFIRST(%c)={",c);
+for(i=0;i<n;i++)
+printf(" %c",first[i]);
+printf("}\n");
+printf("Press 1 to continue :");
+scanf("%d%c",&choice,&ch);
+}
+while(choice==1);
+}
+void FIRST(char c)
+{
+int j;
+if(!(isupper(c)))first[n++]=c;
+for(j=0;j<count;j++)
+{
+if(prodn[j][0]==c)
+{
+if(prodn[j][2]=='S')first[n++]='$';
+else if(islower(prodn[j][2]))first[n++]=prodn[j][2];
+else FIRST(prodn[j][2]);
+}
+}
+}
+O/p:-
+No. of productions - 8
+
+E=TD
+D=+TD
+D=$
+T=FS
+S=*FS
+S=$
+F=(E)
+F=a
+
+Element: E
+==================================
+Program 10:-
+#include <stdio.h>
+#include <string.h>
+
+int k = 0, z = 0, i = 0, j = 0, c = 0;
+char a[16], ac[20], stk[15], act[10];
+
+void check();
+
+int main() {
+    puts("GRAMMAR is\n E->E+E \n E->E*E \n E->(E) \n E->id");
+    puts("Enter input string: ");
+    fgets(a,sizeof(a),stdin);  // Corrected this line to include size and stdin
+    c = strlen(a) - 1;  // Adjusting for the newline character
+    printf("Input string: %s",a);
+    strcpy(act, "SHIFT->");
+    puts("stack \t input \t action");
+    printf("$\t%s$\t---",a);
+    for (k = 0, i = 0; j < c; k++, i++, j++) {
+        if (a[j] == 'i' && a[j + 1] == 'd') {
+            stk[i] = a[j];
+            stk[i + 1] = a[j + 1];
+            stk[i + 2] = '\0';
+            a[j] = ' ';
+            a[j + 1] = ' ';
+            printf("\n$%s\t%s$\t%sid", stk, a, act);
+            check();
+        } else {
+            stk[i] = a[j];
+            stk[i + 1] = '\0';
+            a[j] = ' ';
+            printf("\n$%s\t%s$\t%ssymbols", stk, a, act);
+            check();
+        }
+    }
+    printf("\n");
+}
+
+void check() {
+    strcpy(ac, "REDUCE TO E");
+    for (z = 0; z < c; z++) {
+        if (stk[z] == 'i' && stk[z + 1] == 'd') {
+            stk[z] = 'E';
+            stk[z + 1] = '\0';
+            printf("\n$%s\t%s$\t%s", stk, a, ac);
+            j++;
+        }
+    }
+    for (z = 0; z < c; z++) {
+        if (stk[z] == 'E' && stk[z + 1] == '+' && stk[z + 2] == 'E') {
+            stk[z] = 'E';
+            stk[z + 1] = '\0';
+            stk[z + 2] = '\0';
+            printf("\n$%s\t%s$\t%s", stk, a, ac);
+            i = i - 2;
+        }
+    }
+    for (z = 0; z < c; z++) {
+        if (stk[z] == 'E' && stk[z + 1] == '*' && stk[z + 2] == 'E') {
+            stk[z] = 'E';
+            stk[z + 1] = '\0';
+            stk[z + 2] = '\0';
+            printf("\n$%s\t%s$\t%s", stk, a, ac);
+            i = i - 2;
+        }
+    }
+    for (z = 0; z < c; z++) {
+        if (stk[z] == '(' && stk[z + 1] == 'E' && stk[z + 2] == ')') {
+            stk[z] = 'E';
+            stk[z + 1] = '\0';
+            stk[z + 2] = '\0';
+            printf("\n$%s\t%s$\t%s", stk, a, ac);
+            i = i - 2;
+        }
+    }
+}
 
 
 
